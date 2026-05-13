@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { pool } from './db.js';
 import taskRoutes from './routes/taskRoutes.js';
 
 dotenv.config();
@@ -34,25 +33,14 @@ app.use((req, res) => {
 });
 
 app.use((error, req, res, next) => {
-  console.error('Error:', error);
+  console.error('Error:', error.message);
+
   res.status(error.statusCode || 500).json({
     success: false,
     message: error.message || 'Internal server error'
   });
 });
 
-async function startServer() {
-  try {
-    const conn = await pool.getConnection();
-    console.log('MySQL connected successfully');
-    conn.release();
-  } catch (err) {
-    console.error('MySQL connection failed:', err);
-  }
-
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-}
-
-startServer();
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
