@@ -9,14 +9,6 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-try {
-  const conn = await pool.getConnection();
-  console.log('MySQL connected successfully');
-  conn.release();
-} catch (err) {
-  console.error('MySQL connection failed:', err);
-}
-
 app.use(
   cors({
     origin: process.env.CLIENT_URL || 'http://localhost:5173'
@@ -49,6 +41,18 @@ app.use((error, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+async function startServer() {
+  try {
+    const conn = await pool.getConnection();
+    console.log('MySQL connected successfully');
+    conn.release();
+  } catch (err) {
+    console.error('MySQL connection failed:', err);
+  }
+
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+startServer();
