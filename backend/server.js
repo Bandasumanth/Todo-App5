@@ -4,7 +4,13 @@ import dotenv from 'dotenv';
 import taskRoutes from './routes/taskRoutes.js';
 
 dotenv.config();
-
+try {
+  const conn = await pool.getConnection();
+  console.log('MySQL connected successfully');
+  conn.release();
+} catch (err) {
+  console.error('MySQL connection failed:', err);
+}
 const app = express();
 const PORT = process.env.PORT || 5000;
 
